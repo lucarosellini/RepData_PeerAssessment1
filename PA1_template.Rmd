@@ -21,12 +21,12 @@ activitiesByDate <- group_by(filter(activities,!is.na(steps)), date)
 stepsByDay <- summarise(activitiesByDate,TotalStepsByDay=sum(steps,na.rm = TRUE))
 ```
 
-#### Plot of the number of Steps taken each day
+Histogram of the number of Steps taken each day:
 ```{r, echo=TRUE}
 hist(stepsByDay$TotalStepsByDay, main="Freq. of the total number of steps taken each day", xlab = "total steps")
 ```
 
-#### mean and median total number of steps taken per day
+mean and median total number of steps taken per day:
 ```{r, echo=TRUE}
 summarise(stepsByDay,meanSteps=mean(TotalStepsByDay),medianSteps=median(TotalStepsByDay))
 ```
@@ -42,22 +42,22 @@ qplot(interval, meanSteps, data=meanStepsByInterval,geom="line",main="average da
 maxNumberOfStepsInterval <- meanStepsByInterval[which.max(meanStepsByInterval$meanSteps),"interval"]
 ```
 
-Max Number of Steps 5-minute interval: `r maxNumberOfStepsInterval`
+5-minute interval with the max number of steps: **`r maxNumberOfStepsInterval`**
 
 ## Imputing missing values
 
-1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+- Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 ```{r, echo=TRUE}
 numMissingValues <- length(activities[is.na(activities$steps),"steps"])
 ```
 
-Number of missing values in the dataset: `r numMissingValues`
+Number of missing values in the dataset: **`r numMissingValues`**
 
-2. Devise a strategy for filling in all of the missing values in the dataset. 
+- Devise a strategy for filling in all of the missing values in the dataset. 
 
-The strategy I adoptis to fill missing values with the mean for that 5-minute interval.
+The strategy I adopt is to fill missing values with the mean for that 5-minute interval.
 
-3. Create a new dataset that is equal to the original dataset but with the missing data filled in
+- Create a new dataset that is equal to the original dataset but with the missing data filled in
 ```{r, echo=TRUE}
 
 # joining the meanStepsByInterval dataset and the activities dataset
@@ -67,7 +67,7 @@ joined <- inner_join(activities, meanStepsByInterval, by="interval")
 activities[is.na(activities$steps),]$steps <- joined[is.na(joined$steps),"meanSteps"]
 ```
 
-4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+- Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ```{r, echo=TRUE}
 # recomputing activitiesByDate dataframe
@@ -81,19 +81,19 @@ mean and median total number of steps taken per day:
 summarise(stepsByDayFilled,meanSteps=mean(TotalStepsByDay),medianSteps=median(TotalStepsByDay))
 ```
 
-Q: Do these values differ from the estimates from the first part of the assignment?
+**Q: Do these values differ from the estimates from the first part of the assignment?**
 
 A: Mean does not seem to be affected by filling NAs with the mean of the 5-minute interval.
 
 Median changes a bit, since we're adding more values.
 
-Q: What is the impact of imputing missing data on the estimates of the total daily number of steps?
+**Q: What is the impact of imputing missing data on the estimates of the total daily number of steps?**
 
 Imputing 5-minutes means into missing data doesn't seem to affect the daily number of steps.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-1. Create a new factor variable in the dataset with two levels...
+- Create a new factor variable in the dataset with two levels...
 
 ```{r, echo=TRUE}
 days <- ifelse(weekdays(activities$date) %in% c("Saturday","Sunday"),"weekend","weekday") 
@@ -101,7 +101,7 @@ days <- ifelse(weekdays(activities$date) %in% c("Saturday","Sunday"),"weekend","
 activities$typeOfDay <- as.factor(days)
 ```
 
-2. Make a panel plot containing a time series plot ...
+- Make a panel plot containing a time series plot ...
 
 ```{r, echo=TRUE}
 activitiesByWeekdayAndIntervals <- group_by(activities, typeOfDay, interval)
